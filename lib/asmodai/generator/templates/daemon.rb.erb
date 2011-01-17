@@ -1,0 +1,8 @@
+class <%= name.camelize %> < Asmodai::Daemon
+  def run
+    while running?
+      logger.info { "I'm still running" }
+      sleep 1
+    end
+  end
+end

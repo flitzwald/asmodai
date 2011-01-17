@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'asmodai'
+require 'asmodai/cli'
+
+Asmodai::CLI.start
