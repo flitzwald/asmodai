@@ -6,7 +6,7 @@ class DaemonTest < ActiveSupport::TestCase
   class TestDaemon < Asmodai::Daemon
     def run
       while running?
-        puts "Still running"
+        puts "Still running #{self}"
         sleep 0.01
       end
     end
@@ -42,11 +42,18 @@ class DaemonTest < ActiveSupport::TestCase
   test "Starting and stopping the daemons" do 
     assert !TestDaemon.is_running?
     assert !TestDaemon.log_file_path.exist?    
+    
     TestDaemon.start
     assert TestDaemon.is_running?
     assert TestDaemon.pid > 0
-    sleep 0.1
+
     assert TestDaemon.log_file_path.exist?
+        
+    # Wait until some lines have been written to the log file
+    while TestDaemon.log_file_path.size < 500
+      sleep 0.1
+    end
+
     TestDaemon.terminate
     assert !TestDaemon.pid_file_path.exist?
     assert TestDaemon.log_file_path.size > 0

@@ -25,6 +25,7 @@ class Asmodai::Daemon
     end
     
     def retrieve_class(path, opts={})
+
       dirname = path
       filename = File.basename(path)
       Dir.chdir(dirname) if dirname != "."
@@ -45,7 +46,12 @@ class Asmodai::Daemon
   end
 
   def perform_run
-    self.running = true
+    require 'rubygems'
+    require 'bundler'
+    
+    Bundler.setup
+    Bundler.require
+    
     unless respond_to? :run
       raise ArgumentError.new("#{self.class} does not implement 'run'")
     end
@@ -53,19 +59,24 @@ class Asmodai::Daemon
     self.running = false
   end
   
+  def on_signal(sig)
+  end
+  
   def start 
     pid = fork do 
+      self.running = true
+
       %w(INT TERM).each do |sig|
         trap sig do 
           logger.info { "Received signal #{sig}"}
+          on_signal(sig)
           self.running = false
         end
       end
-      
+
       $stdin.close
       $stdout.reopen(log_file)
       $stderr.reopen(log_file)
-      
       logger.info "Starting up #{daemon_name} at #{Time.now}, pid: #{Process.pid}"
       perform_run
     end
@@ -73,7 +84,7 @@ class Asmodai::Daemon
     self.class.pid_file_path.open("w") do |f|
       f.puts pid
     end
-    
+
     Process.detach(pid)
   end
 end
