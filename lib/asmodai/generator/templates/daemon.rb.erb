@@ -1,4 +1,4 @@
-class <%= name.camelize %> < Asmodai::Daemon
+class <%= @app_name.camelize %> < Asmodai::Daemon
   def on_signal(sig)
     # perform cleanup or stop an eventloop
   end

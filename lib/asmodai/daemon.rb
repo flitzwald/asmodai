@@ -1,4 +1,5 @@
 class Asmodai::Daemon
+  require 'asmodai/daemon/info'  
   require 'asmodai/daemon/logging'
   require 'asmodai/daemon/process_management'
   require 'asmodai/daemon/rake_task'  
