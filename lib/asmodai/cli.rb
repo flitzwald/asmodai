@@ -33,19 +33,7 @@ class Asmodai::CLI < Thor
     template "templates/init_d.erb", path
     system "chmod a+x #{path}"
   end
-  
-  def help(*params)
-    require 'asmodai/generator'
-    case params.first
-    when 'new'
-      Asmodai::Generator::App.help(shell)
-    when 'install'
-      Asmodai::Generator::Installer.help(shell)
-    else
-      super *params
-    end
-  end
-  
+    
   desc "foreground", "Runs the daemon in foreground logging to stdout"
   def foreground
     instance=Asmodai::Daemon.retrieve_class(Dir.pwd).new
