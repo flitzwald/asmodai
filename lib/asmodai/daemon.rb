@@ -36,16 +36,17 @@ class Asmodai::Daemon
       eval(opts[:class_name])
     end
   end
+
+  def initialize
+    self.running = false
+  end
   
   def daemon_name
     self.class.daemon_name
   end
-  
-  def initialize
-    self.running = false
-  end
 
   def perform_run
+    self.running = true
     require 'rubygems'
     require 'bundler'
     
@@ -64,8 +65,10 @@ class Asmodai::Daemon
   
   def start 
     pid = fork do 
-      self.running = true
-
+      $stdin.close
+      $stdout.reopen(log_file)
+      $stderr.reopen(log_file)
+      logger.info "Starting up #{daemon_name} at #{Time.now}, pid: #{Process.pid}"
       %w(INT TERM).each do |sig|
         trap sig do 
           logger.info { "Received signal #{sig}"}
@@ -73,11 +76,6 @@ class Asmodai::Daemon
           self.running = false
         end
       end
-
-      $stdin.close
-      $stdout.reopen(log_file)
-      $stderr.reopen(log_file)
-      logger.info "Starting up #{daemon_name} at #{Time.now}, pid: #{Process.pid}"
       perform_run
     end
     

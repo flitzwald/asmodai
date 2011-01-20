@@ -15,7 +15,9 @@ class Asmodai::CLI < Thor
   
   desc "foreground", "Runs the daemon in foreground logging to stdout"
   def foreground
-    Asmodai::Daemon.retrieve_class(Dir.pwd).new.perform_run
+    instance=Asmodai::Daemon.retrieve_class(Dir.pwd).new
+    instance.running = true
+    instance.perform_run
   end
 
   desc "start", "Runs the daemon in the background"
@@ -41,4 +43,8 @@ class Asmodai::CLI < Thor
     end
   end
   
+  desc "install", "Installs startup scripts to /etc/init.d"
+  def install
+    
+  end
 end
