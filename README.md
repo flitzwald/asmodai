@@ -47,11 +47,14 @@ To start your daemon in the background run
 
 $ asmodai start
 
-Check the status of the daemon
+This will redirect all the output from the process to log/foobar.log
+
+In order to check the status of the daemon run
 
 $ asmodai status
   => foobar runs with pid 75952
-  
+
+
 Stop the daemon
 
 $ asmodai stop
