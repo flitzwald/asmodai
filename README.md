@@ -14,6 +14,7 @@ $ gem install asmodai
 ## Usage
 
 $ asmodai new foobar
+
 $ cd foobar
 
 Here you will find a dummy implementation:
