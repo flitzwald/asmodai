@@ -1,10 +1,16 @@
 class <%= @app_name.camelize %> < Asmodai::Daemon
+  attr_accessor :running
+  
   def on_signal(sig)
     # perform cleanup or stop an eventloop
+    self.running=false
   end
   
   def run
-    while running?
+    # Your real implementation goes here
+    
+    self.running=true
+    while running
       logger.info { "I'm still running" }
       sleep 1
     end

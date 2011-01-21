@@ -1,6 +1,6 @@
 module Asmodai::Daemon::ProcessManagement
   def pid_file_path
-    base_path.join("log/#{daemon_name}.pid")
+    Asmodai.root.join("log/#{daemon_name}.pid")
   end
   
   def pid

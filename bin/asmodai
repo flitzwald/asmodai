@@ -3,4 +3,6 @@
 require 'asmodai'
 require 'asmodai/cli'
 
+Asmodai.root = Pathname.new(Dir.pwd)
+$LOAD_PATH.unshift(Asmodai.root.join("lib").to_s)
 Asmodai::CLI.start
