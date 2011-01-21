@@ -59,6 +59,7 @@ $ asmodai stop
 ## Example: Using Asmodai with EventMachine
 
 $ asmodai new echo
+
 $ cd echo
 
 Edit the Gemfile
@@ -89,9 +90,7 @@ Edit echo.rb
 
     class Echo < Asmodai::Daemon
       require 'server' # lib is automatically added to the $LOAD_PATH
-      
-      attr_accessor :running
-      
+
       def on_signal(sig)
         EventMachine::stop_event_loop
       end

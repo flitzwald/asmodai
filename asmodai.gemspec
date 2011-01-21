@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Sebastian Morawietz"]
   s.email       = []
-  s.homepage    = "http://rubygems.org/gems/asmodai"
+  s.homepage    = "https://github.com/flitzwald/asmodai"
   s.summary     = "A simple daemon generator"
   s.description = "A simple daemon generator"
 
