@@ -16,12 +16,12 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 do_start()
 {
-        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && asmodai start"
+        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && <%= @asmodai %> start"
 }
 
 do_stop()
 {
-        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && asmodai stop"
+        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && <%= @asmodai %> stop"
 
 	return 0
 }

@@ -9,13 +9,12 @@ stop-scripts, pid-file logic or implementing logging.
 
 ## Installation
 
-$ gem install asmodai
+    $ gem install asmodai
 
 ## Usage
 
-$ asmodai new foobar
-
-$ cd foobar
+    $ asmodai new foobar
+    $ cd foobar
 
 Here you will find a dummy implementation:
 
@@ -38,14 +37,14 @@ Here you will find a dummy implementation:
 
 You can develop your daemon by executing 
 
-$ asmodai foreground
+    $ asmodai foreground
 
 This executes the daemon in the foreground and outputs all logging to standard
 output. It can be terminated with Ctrl-C.
 
 To start your daemon in the background run
 
-$ asmodai start
+    $ asmodai start
 
 This will redirect all the output from the process to log/foobar.log
 
@@ -57,13 +56,12 @@ $ asmodai status
 
 Stop the daemon
 
-$ asmodai stop
+    $ asmodai stop
 
 ## Example: Using Asmodai with EventMachine
 
-$ asmodai new echo
-
-$ cd echo
+    $ asmodai new echo
+    $ cd echo
 
 Edit the Gemfile
 
@@ -105,6 +103,12 @@ Edit echo.rb
       end
     end
 
+Now, run
+
+    $ bundle install
+    $ asmodai start
+
+And you have your own running Echo server. Wheee!
 
 
 

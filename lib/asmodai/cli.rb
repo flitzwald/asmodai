@@ -22,14 +22,25 @@ class Asmodai::CLI < Thor
   end
   
   desc "install", "Installs startup scripts to /etc/init.d"
+  method_option :rvm, :type => :boolean,
+                :desc => "Create an rvm-wrapper for asmodai"
   method_option :autostart,
                 :type => :boolean,
                 :desc => %{If you provide this, startup-links will be generated for the given runlevel. This is currently only supported on Debian/Ubuntu.}
   def install
     @info = Asmodai::Info.current
+    @asmodai = "asmodai"
+    
+    if options[:rvm]
+      wrapper_cmd="rvm wrapper #{ENV['rvm_ruby_string']} bootup asmodai"
+      @asmodai=`which bootup_asmodai`.strip
+    end
+        
     path = "/etc/init.d/#{@info.daemon_name}"
     template "templates/init_d.erb", path
     system "chmod a+x #{path}"
+
+    
     if options[:autostart]
       if (update_bin=`which update-rc.d`.strip).blank?
         warn "update-rc.d was not found. Omitting autostart installation."
