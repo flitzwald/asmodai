@@ -50,8 +50,8 @@ This will redirect all the output from the process to log/foobar.log
 
 In order to check the status of the daemon run
 
-$ asmodai status
-  => foobar runs with pid 75952
+    $ asmodai status
+    foobar runs with pid 75952
 
 
 Stop the daemon
@@ -67,7 +67,7 @@ Edit the Gemfile
 
     source 'http://rubygems.org'
 
-    gem 'activesupport', ">= 3.0.0"
+    gem 'activesupport', ">= 3.0.3"
     gem 'eventmachine'
   
 Edit lib/server.rb
