@@ -27,9 +27,27 @@ class Asmodai::CLI < Thor
   method_option :autostart,
                 :type => :boolean,
                 :desc => %{If you provide this, startup-links will be generated for the given runlevel. This is currently only supported on Debian/Ubuntu.}
+
   def install
     @info = Asmodai::Info.current
     @asmodai = "asmodai"
+    rvm_ruby_string = (ENV['rvm_ruby_string'] || "")
+    
+    if !rvm_ruby_string.strip.empty?
+      @asmodai=`which bootup_asmodai`.strip
+      
+      if @asmodai.empty?
+        puts <<-EOS
+        
+You are running ruby in an rvm environment. In order for your init.d-script to
+work properly, you must create a wrapper for asmodai that sets the correct environment. 
+Run:
+
+asmodai create_rvm_wrapper
+
+EOS
+      end
+    end
     
     if options[:rvm]
       wrapper_cmd="rvm wrapper #{ENV['rvm_ruby_string']} bootup asmodai"
@@ -49,13 +67,19 @@ class Asmodai::CLI < Thor
       end
     end
   end
-    
+
+  desc "create_rvm_wrapper", "Creates a global rvm enabled wrapper for asmodai"
+  def create_rvm_wrapper
+    system "rvm wrapper #{ENV['rvm_ruby_string']} bootup asmodai"
+  end
+  
   desc "foreground", "Runs the daemon in foreground logging to stdout"
   def foreground
     instance=Asmodai::Info.current.daemon_class.new
     instance.foreground
   end
   
+
   desc "start", "Runs the daemon in the background"
   def start
     klass = Asmodai::Info.current.daemon_class
