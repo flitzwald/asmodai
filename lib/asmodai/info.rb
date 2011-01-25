@@ -66,7 +66,7 @@ class Asmodai::Info
       false
     end
   end
-
+  
   # Executes cmd in the context of the user, even if asmodai
   # is called sudoed
   def execute_sudo_checked(cmd)
