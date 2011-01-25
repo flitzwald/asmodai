@@ -16,7 +16,7 @@ class Asmodai::CLI < Thor
   def new(name)
     @app_name=name
     empty_directory "#{name}/log"
-    empty_directory "#{name}/lib"    
+    empty_directory "#{name}/lib"
     template 'templates/daemon.rb.erb', "#{name}/#{name}.rb"
     copy_file 'templates/Gemfile', "#{name}/Gemfile"
   end
@@ -99,7 +99,7 @@ class Asmodai::CLI < Thor
   desc "console", "Starts a console with loaded environment"
   def console
     klass = Asmodai::Info.current.daemon_class
-    exec "irb -r rubygems -r asmodai -r ./#{klass.daemon_name}"
+    exec "irb -Ilib -r rubygems -r asmodai -r ./#{klass.daemon_name}"
   end
   
   desc "version", "Prints Asmodai's version and exists"
