@@ -25,6 +25,23 @@ class Asmodai::Info
     daemon_name.camelize
   end
   
+  def rvm_environment?
+    !rvm_ruby_string.empty?
+  end
+  
+  def rvm_ruby_string
+    execute_sudo_checked("env | grep rvm_ruby_string | grep -v SUDO").strip
+  end
+  
+  def rvm_path
+    execute_sudo_checked(
+      "env | grep rvm_path | grep -v SUDO").strip.split("=").last
+  end
+  
+  def rvm_wrapper_path
+    File.join(rvm_path, "bin/bootup_asmodai")
+  end
+
   # Returns the class of the Daemon
   def daemon_class
     require "./#{daemon_name}"
@@ -39,5 +56,24 @@ class Asmodai::Info
   
   def base_file_owner
     Etc.getpwuid(Pathname.new(base_file).stat.uid)
+  end
+
+  # Return the sudoer if present, false otherwise
+  def run_as_sudo?
+    if ENV['USER']=='root' and (su=ENV['SUDO_USER'])
+      su
+    else
+      false
+    end
+  end
+
+  # Executes cmd in the context of the user, even if asmodai
+  # is called sudoed
+  def execute_sudo_checked(cmd)
+    if (su=run_as_sudo?)
+      `sudo -u #{su} bash -l -c '#{cmd}'`.strip
+    else
+      `#{cmd}`.strip
+    end
   end
 end

@@ -27,4 +27,5 @@ module Asmodai
   require 'asmodai/info'  
   require 'asmodai/logging'
   require 'asmodai/daemon'
+  require 'asmodai/version'
 end
