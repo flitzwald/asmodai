@@ -26,7 +26,7 @@ class Asmodai::Info
   end
   
   def rvm_environment?
-    !rvm_ruby_string.empty?
+    !rvm_ruby_string.empty? || ENV['GEM_PATH']
   end
   
   def rvm_ruby_string

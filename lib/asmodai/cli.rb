@@ -22,8 +22,6 @@ class Asmodai::CLI < Thor
   end
   
   desc "install", "Installs startup scripts to /etc/init.d"
-  method_option :force, :type => :boolean,
-                :desc => "Overwrite a given init.d-file"
   method_option :autostart,
                 :type => :boolean,
                 :desc => %{If you provide this, startup-links will be generated for the given runlevel. This is currently only supported on Debian/Ubuntu.}
@@ -36,17 +34,19 @@ class Asmodai::CLI < Thor
     if @info.rvm_environment?
       @asmodai=Pathname.new(@info.rvm_wrapper_path)
       if !@asmodai.exist?
-        @info.execute_sudo_checked("rvm wrapper #{@info.rvm_ruby_string} bootup asmodai")
+        system "rvm wrapper #{@info.rvm_ruby_string} bootup asmodai"
       end
     end
+    
     path = "/etc/init.d/#{@info.daemon_name}"
     
-    if options[:force]
-      FileUtils.rm_f(path)
+    IO.popen "sudo bash -c \"cat > #{path}; chmod a+x #{path}\"", "r+" do |io|
+      template_path = File.join(
+        File.dirname(__FILE__), "generator/templates/init_d.erb")
+
+      io.puts ERB.new(File.read(template_path)).result(binding)
+      io.close
     end
-    
-    template "templates/init_d.erb", path
-    system "chmod a+x #{path}"
 
     if options[:autostart]
       if (update_bin=`which update-rc.d`.strip).blank?
