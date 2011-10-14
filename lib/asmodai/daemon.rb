@@ -42,25 +42,26 @@ class Asmodai::Daemon
     prepare_run
 
     raise 'Fork failed' if (pid=fork) == -1
-    exit unless pid.nil?
 
-    Process.setsid
+    if !pid
+      Process.setsid
 
-    raise 'Fork failed' if (pid=fork) == -1
-    exit unless pid.nil?
+      raise 'Fork failed' if (pid=fork) == -1
+      if !pid
+        pid = Process.pid
 
-    pid = Process.pid
+        self.class.pid_file_path.open("w") do |f|
+          f.puts pid
+        end
 
-    self.class.pid_file_path.open("w") do |f|
-      f.puts pid
+        $stdin.reopen('/dev/null')
+        $stdout.reopen(log_file)
+        $stderr.reopen(log_file)
+        logger.info "Starting up #{daemon_name} at #{Time.now}, pid: #{Process.pid}"
+
+        perform_run
+      end
     end
-
-    $stdin.reopen('/dev/null')
-    $stdout.reopen(log_file)
-    $stderr.reopen(log_file)
-    logger.info "Starting up #{daemon_name} at #{Time.now}, pid: #{Process.pid}"
-
-    perform_run
   end
 
   protected
