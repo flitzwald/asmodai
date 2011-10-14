@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    asmodai (0.1.8)
+    asmodai (0.1.19)
       activesupport (>= 3.0.3)
       bundler (>= 1.0.9)
       i18n (>= 0.5.0)
