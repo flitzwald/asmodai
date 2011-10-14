@@ -13,25 +13,16 @@
 DESC="Asmodai-generated daemon"
 NAME="<%= @info.daemon_name %>"
 SCRIPTNAME=/etc/init.d/$NAME
+export GEM_HOME=<%= @info.gem_home %>
+RUBY_EXE=<%= @info.ruby_exe_path %>
 
-do_start()
-{
-        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && <%= @asmodai %> start"
-}
+<% @info.wrapped_commands.each do |command| %>
+<%= @info.call_wrapper(command) %>
+<% end %>
 
-do_stop()
-{
-        sudo -u <%= @info.base_file_owner.name %> bash -l -c "cd <%= @info.path %> && <%= @asmodai %> stop"
-
-	return 0
-}
-
-#
-# Function that sends a SIGHUP to the daemon/service
-#
 do_reload() {
-        do_stop
-        do_start
+  do_stop
+  do_start
 	return 0
 }
 
@@ -45,6 +36,12 @@ case "$1" in
   restart|force-reload)
     do_stop
     do_start
+	;;
+	reopen)
+		do_reopen
+	;;
+	foreground)
+		do_foreground
 	;;
   *)
 	echo "Usage: $SCRIPTNAME {start|stop|restart}" >&2

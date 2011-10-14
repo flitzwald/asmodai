@@ -25,23 +25,20 @@ class Asmodai::Info
     daemon_name.camelize
   end
   
-  def rvm_environment?
-    !rvm_ruby_string.empty? || ENV['GEM_PATH']
+  def call_wrapper(argument)
+    command="#{ruby_exe_path} ./script/asmodai #{argument}"
+    function_body=<<-FUNCTION_END
+do_#{argument}() {
+	cd #{path}
+	sudo -u #{base_file_owner.name} bash -c "GEM_HOME=#{gem_home} #{command}"
+}  
+FUNCTION_END
   end
   
-  def rvm_ruby_string
-    execute_sudo_checked("env | grep rvm_ruby_string | grep -v SUDO").strip
+  def wrapped_commands
+    %w(start stop reopen foreground)
   end
   
-  def rvm_path
-    execute_sudo_checked(
-      "env | grep rvm_path | grep -v SUDO").strip.split("=").last
-  end
-  
-  def rvm_wrapper_path
-    File.join(rvm_path, "bin/bootup_asmodai")
-  end
-
   # Returns the class of the Daemon
   def daemon_class
     require "./#{daemon_name}"
@@ -58,6 +55,18 @@ class Asmodai::Info
     Etc.getpwuid(Pathname.new(base_file).stat.uid)
   end
 
+  def ruby_exe_path
+    File.join(Config::CONFIG['bindir'], Config::CONFIG['ruby_install_name']).
+      sub(/.*\s.*/m, '"\&"')
+  end
+  
+  def gem_home
+    if (path=ENV['GEM_HOME']).blank?
+      path=Gem.dir
+    end
+    path
+  end
+  
   # Return the sudoer if present, false otherwise
   def run_as_sudo?
     if ENV['USER']=='root' and (su=ENV['SUDO_USER'])

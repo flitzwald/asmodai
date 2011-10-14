@@ -1,10 +1,6 @@
-require 'thor'
-require 'thor/group'
-require 'thor/actions'
-require 'active_support'
-require 'active_support/core_ext'
-
-class Asmodai::CLI < Thor
+class Asmodai::CLI < ::Thor
+  require 'fileutils'
+  
   include Thor::Actions
   attr_accessor :app_name
   
@@ -17,8 +13,12 @@ class Asmodai::CLI < Thor
     @app_name=name
     empty_directory "#{name}/log"
     empty_directory "#{name}/lib"
+    empty_directory "#{name}/script"
     template 'templates/daemon.rb.erb', "#{name}/#{name}.rb"
     copy_file 'templates/Gemfile', "#{name}/Gemfile"
+    template 'templates/asmodai.erb', "#{name}/script/asmodai"
+    template 'templates/launcher.erb', "#{name}/script/launcher"
+    FileUtils.chmod 0755, "#{name}/script/asmodai"
   end
   
   desc "install", "Installs startup scripts to /etc/init.d"
@@ -29,17 +29,7 @@ class Asmodai::CLI < Thor
   def install
     @info = Asmodai::Info.current
     @asmodai = "asmodai"
-    rvm_ruby_string = (ENV['rvm_ruby_string'] || "")
-    
-    if @info.rvm_environment?
-      @asmodai=Pathname.new(@info.rvm_wrapper_path)
-      if !@asmodai.exist?
-        system "rvm wrapper #{@info.rvm_ruby_string} bootup asmodai"
-      end
-    end
-    
     path = "/etc/init.d/#{@info.daemon_name}"
-    
     IO.popen "sudo bash -c \"cat > #{path}; chmod a+x #{path}\"", "r+" do |io|
       template_path = File.join(
         File.dirname(__FILE__), "generator/templates/init_d.erb")

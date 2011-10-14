@@ -1,5 +1,7 @@
 require 'bundler'
 Bundler::GemHelper.install_tasks
+Bundler.setup
+Bundler.require(:default,:test)
 
 namespace :asmodai do
   desc "Runs the unit tests"

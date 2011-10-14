@@ -24,8 +24,12 @@ module Asmodai
     end
   end
   
+  require 'thor'
+  require 'thor/actions'
+  require 'thor/group'  
   require 'asmodai/info'  
   require 'asmodai/logging'
   require 'asmodai/daemon'
   require 'asmodai/version'
+  require 'asmodai/cli'
 end

@@ -1,8 +1,17 @@
 #!/usr/bin/env ruby
 
-require 'asmodai'
-require 'asmodai/cli'
+if File.exist?('./script/asmodai')
+  exec './script/asmodai', *ARGV
+else   
+  require 'thor'
+  require 'thor/actions'  
+  require 'thor/group'    
+  require 'active_support/core_ext'
+  require 'asmodai'
+  require 'asmodai/cli'
 
-Asmodai.root = Pathname.new(Dir.pwd)
-$LOAD_PATH.unshift(Asmodai.root.join("lib").to_s)
-Asmodai::CLI.start
+
+  Asmodai.root = Pathname.new(Dir.pwd)
+  $LOAD_PATH.unshift(Asmodai.root.join("lib").to_s)
+  Asmodai::CLI.start
+end
