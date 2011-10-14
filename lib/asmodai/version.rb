@@ -1,3 +1,3 @@
 module Asmodai
-  VERSION = "0.1.8"
+  VERSION = "0.1.19"
 end
