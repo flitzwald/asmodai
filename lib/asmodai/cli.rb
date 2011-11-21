@@ -17,8 +17,8 @@ class Asmodai::CLI < ::Thor
     template 'templates/daemon.rb.erb', "#{name}/#{name}.rb"
     copy_file 'templates/Gemfile', "#{name}/Gemfile"
     template 'templates/asmodai.erb', "#{name}/script/asmodai"
-    template 'templates/launcher.erb', "#{name}/script/launcher"
     FileUtils.chmod 0755, "#{name}/script/asmodai"
+    
   end
   
   desc "install", "Installs startup scripts to /etc/init.d"

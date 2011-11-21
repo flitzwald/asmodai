@@ -42,10 +42,9 @@ class Asmodai::Daemon
     prepare_run
 
     raise 'Fork failed' if (pid=fork) == -1
-
+    
     if !pid
       Process.setsid
-
       raise 'Fork failed' if (pid=fork) == -1
       if !pid
         pid = Process.pid
